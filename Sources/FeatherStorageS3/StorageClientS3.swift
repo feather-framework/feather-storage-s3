@@ -1,3 +1,9 @@
+//
+//  StorageClientS3.swift
+//  feather-storage-s3
+//
+//  Created by Tibor Bödecs on 2023. 01. 16.
+
 import FeatherStorage
 import Logging
 import NIOCore
@@ -13,7 +19,7 @@ public struct StorageClientS3: StorageClient {
     public let bucket: String
     /// Optional request timeout applied by higher-level integrations.
     public let timeout: TimeAmount?
-    
+
     /// Logger used for all S3 requests.
     public let logger: Logger
 
@@ -64,7 +70,6 @@ public struct StorageClientS3: StorageClient {
         }
     }
 
-
     /// Downloads an object, optionally constrained to a byte range.
     ///
     /// - Parameters:
@@ -77,7 +82,9 @@ public struct StorageClientS3: StorageClient {
         range: ClosedRange<Int>?
     ) async throws(StorageClientError) -> StorageSequence {
         do {
-            let byteRange = range.map { "bytes=\($0.lowerBound)-\($0.upperBound)" }
+            let byteRange = range.map {
+                "bytes=\($0.lowerBound)-\($0.upperBound)"
+            }
             let response = try await s3.getObject(
                 .init(bucket: bucket, key: key, range: byteRange),
                 logger: logger
@@ -183,14 +190,15 @@ public struct StorageClientS3: StorageClient {
 
             let keys = (response.contents ?? []).compactMap(\.key)
             let dropCount = prefix?.split(separator: "/").count ?? 0
-            return keys.compactMap { fullKey in
-                fullKey.split(separator: "/")
-                    .dropFirst(dropCount)
-                    .first
-                    .map(String.init)
-            }
-            .uniqued()
-            .sorted()
+            return
+                keys.compactMap { fullKey in
+                    fullKey.split(separator: "/")
+                        .dropFirst(dropCount)
+                        .first
+                        .map(String.init)
+                }
+                .uniqued()
+                .sorted()
         }
         catch {
             throw mapError(error)
@@ -334,7 +342,8 @@ public struct StorageClientS3: StorageClient {
         chunks: [StorageMultipartChunk]
     ) async throws(StorageClientError) {
         do {
-            let parts: [S3.CompletedPart] = chunks
+            let parts: [S3.CompletedPart] =
+                chunks
                 .sorted(by: { $0.number < $1.number })
                 .map {
                     .init(
@@ -379,8 +388,8 @@ extension StorageClientS3 {
     }
 }
 
-private extension Array where Element: Hashable {
-    func uniqued() -> [Element] {
+extension Array where Element: Hashable {
+    fileprivate func uniqued() -> [Element] {
         var set = Set<Element>()
         return filter { set.insert($0).inserted }
     }

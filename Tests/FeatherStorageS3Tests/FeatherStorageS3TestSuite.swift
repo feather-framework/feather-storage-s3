@@ -1,5 +1,11 @@
-import Foundation
+//
+//  FeatherStorageS3TestSuite.swift
+//  feather-storage-s3
+//
+//  Created by Tibor Bödecs on 2023. 01. 16.
+
 import FeatherStorage
+import Foundation
 import NIOCore
 import SotoCore
 import Testing
@@ -47,7 +53,12 @@ struct FeatherStorageS3TestSuite {
         try await storage.upload(key: key, buffer: payload)
         let downloaded = try await storage.download(key: key)
 
-        #expect(downloaded.getString(at: downloaded.readerIndex, length: downloaded.readableBytes) == "s3-test")
+        #expect(
+            downloaded.getString(
+                at: downloaded.readerIndex,
+                length: downloaded.readableBytes
+            ) == "s3-test"
+        )
 
         try await storage.delete(key: key)
     }
