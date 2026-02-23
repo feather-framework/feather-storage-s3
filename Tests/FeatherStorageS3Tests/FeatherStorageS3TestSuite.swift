@@ -72,21 +72,23 @@ struct FeatherStorageS3TestSuite {
                         length: UInt64(payload.readableBytes)
                     )
                 )
+
+                let downloaded = try await storage.download(
+                    key: key,
+                    range: nil
+                )
+
+                let buffer = try await downloaded.collect(upTo: .max)
+                let value = buffer.getString(
+                    at: 0,
+                    length: buffer.readableBytes
+                )
+                #expect(value == contents)
+
             }
             catch {
                 Issue.record(error)
             }
-
-            //            let downloaded = try await storage.download(key: key)
-            //
-            //            #expect(
-            //                downloaded.getString(
-            //                    at: downloaded.readerIndex,
-            //                    length: downloaded.readableBytes
-            //                ) == "s3-test"
-            //            )
-
-            //            try await storage.delete(key: key)
         }
     }
 }
