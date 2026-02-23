@@ -36,7 +36,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-log", from: "1.6.0"),
         .package(url: "https://github.com/soto-project/soto", from: "7.10.0"),
-        .package(url: "https://github.com/feather-framework/feather-storage", exact: "1.0.0-beta.1"),
+        .package(url: "https://github.com/feather-framework/feather-storage", exact: "1.0.0-beta.2"),
         // [docc-plugin-placeholder]
     ],
     targets: [

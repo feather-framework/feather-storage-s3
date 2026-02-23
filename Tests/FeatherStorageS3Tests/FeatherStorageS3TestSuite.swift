@@ -5,7 +5,6 @@
 //  Created by Tibor Bödecs on 2023. 01. 16.
 
 import FeatherStorage
-import Foundation
 import NIOCore
 import SotoCore
 import SotoS3
@@ -56,7 +55,7 @@ struct FeatherStorageS3TestSuite {
     @Test
     func uploadDownloadWhenConfigured() async throws {
         try await runUsingTestStorageClient { storage in
-            let key = "\(UUID().uuidString).txt"
+            let key = "test.txt"
             let contents = "s3 test file contents"
             var payload = ByteBufferAllocator()
                 .buffer(capacity: contents.utf8.count)
