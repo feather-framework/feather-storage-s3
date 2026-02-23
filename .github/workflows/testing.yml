@@ -41,7 +41,7 @@ jobs:
       - name: Wait For Minio Docker Container
         run: |
           for i in {1..30}; do
-            if docker compose exec -T mc ready local; then
+            if curl -fsS http://127.0.0.1:9000/minio/health/ready > /dev/null; then
               exit 0
             fi
             sleep 1
