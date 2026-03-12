@@ -1,5 +1,5 @@
 {
-  "originHash" : "6766d77a8685b6b81b433118e11dfc80a6f288f51735ccd297f3b2f6023299ee",
+  "originHash" : "ea3c3ab938d8d6a7a75cfdb59ae2a9dd47f831825f723e8c32c371f7987e777d",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -29,12 +29,12 @@
       }
     },
     {
-      "identity" : "soto",
+      "identity" : "soto-codegenerator",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/soto-project/soto",
+      "location" : "https://github.com/soto-project/soto-codegenerator",
       "state" : {
-        "revision" : "e67559846e8f746bcab2ad889e0a749bb29d44d5",
-        "version" : "7.12.0"
+        "revision" : "c541e4d3e71f9347cd17a5acea7401ef3b435542",
+        "version" : "7.8.4"
       }
     },
     {
@@ -47,12 +47,30 @@
       }
     },
     {
+      "identity" : "soto-smithy",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/soto-project/soto-smithy.git",
+      "state" : {
+        "revision" : "4bf74c2dc38d7b5ad0e80c8de8fbb9ceeb4dc4f0",
+        "version" : "0.4.9"
+      }
+    },
+    {
       "identity" : "swift-algorithms",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms.git",
       "state" : {
         "revision" : "87e50f483c54e6efd60e885f7f5aa946cee68023",
         "version" : "1.2.1"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "state" : {
+        "revision" : "c5d11a805e765f52ba34ec7284bd4fcd6ba68615",
+        "version" : "1.7.0"
       }
     },
     {
@@ -161,6 +179,15 @@
       "state" : {
         "revision" : "f17c111cec972c2a4922cef38cf64f76f7e87886",
         "version" : "2.8.0"
+      }
+    },
+    {
+      "identity" : "swift-mustache",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hummingbird-project/swift-mustache.git",
+      "state" : {
+        "revision" : "2e2a84698dd8a5fff2fe28857f0f95bb03d21d64",
+        "version" : "2.0.2"
       }
     },
     {

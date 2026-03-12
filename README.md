@@ -2,11 +2,8 @@
 
 S3 compatible driver implementation for the abstract [Feather Storage](https://github.com/feather-framework/feather-storage) Swift API package.
 
-[
-    ![Release: 1.0.0-beta.1](https://img.shields.io/badge/Release-1%2E0%2E0--beta%2E1-F05138)
-](
-    https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-beta.1
-)
+[![Release: 1.0.0-beta.2](https://img.shields.io/badge/Release-1%2E0%2E0--beta%2E2-F05138)](
+https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-beta.2)
 
 ## Features
 
@@ -34,7 +31,7 @@ S3 compatible driver implementation for the abstract [Feather Storage](https://g
 Add the dependency to your `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/feather-framework/feather-storage-s3", exact: "1.0.0-beta.1"),
+.package(url: "https://github.com/feather-framework/feather-storage-s3", exact: "1.0.0-beta.2"),
 ```
 
 Then add `FeatherStorageS3` to your target dependencies:
@@ -47,11 +44,7 @@ Then add `FeatherStorageS3` to your target dependencies:
 
 API documentation is available at the link below:
 
-[
-    ![DocC API documentation](https://img.shields.io/badge/DocC-API_documentation-F05138)
-](
-    https://feather-framework.github.io/feather-storage-s3/
-)
+[![DocC API documentation](https://img.shields.io/badge/DocC-API_documentation-F05138)](https://feather-framework.github.io/feather-storage-s3/)
 
 Here is a brief example:
 
@@ -104,5 +97,4 @@ The following storage client implementations are also available for use:
 
 ## Contributing
 
-[Pull requests](https://github.com/feather-framework/feather-storage-s3/pulls) are welcome. Please keep changes focused and include tests for new logic. 🙏
-
+[Pull requests](https://github.com/feather-framework/feather-storage-s3/pulls) are welcome. Please keep changes focused and include tests for new logic.

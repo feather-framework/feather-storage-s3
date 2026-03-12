@@ -4,11 +4,11 @@
 //
 //  Created by Tibor Bödecs on 2023. 01. 16.
 
+import FeatherGeneratedS3
 import FeatherStorage
 import Logging
 import NIOCore
 import SotoCore
-import SotoS3
 
 /// S3-compatible storage driver.
 public struct StorageClientS3: StorageClient {

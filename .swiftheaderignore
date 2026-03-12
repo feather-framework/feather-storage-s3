@@ -1,0 +1,16 @@
+.github/**
+docker/**
+.docctargetlist
+.gitignore
+.swift-format
+.swiftformatignore
+.swiftheaderignore
+.unacceptablelanguageignore
+docker-compose.yaml
+LICENSE
+Makefile
+Package.swift
+Package.resolved
+README.md
+Sources/FeatherGeneratedS3/s3-2006-03-01.json
+Sources/FeatherGeneratedS3/soto.config.json
