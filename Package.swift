@@ -35,16 +35,28 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log", from: "1.6.0"),
-        .package(url: "https://github.com/soto-project/soto", from: "7.10.0"),
+        .package(url: "https://github.com/soto-project/soto-core", from: "7.0.0"),
+        .package(url: "https://github.com/soto-project/soto-codegenerator", from: "7.0.0"),
         .package(url: "https://github.com/feather-framework/feather-storage", exact: "1.0.0-beta.2"),
         // [docc-plugin-placeholder]
     ],
     targets: [
         .target(
+            name: "FeatherGeneratedS3",
+            dependencies: [
+                .product(name: "SotoCore", package: "soto-core"),
+            ],
+            swiftSettings: defaultSwiftSettings,
+            plugins: [
+                .plugin(name: "SotoCodeGeneratorPlugin", package: "soto-codegenerator"),
+            ]
+        ),
+        .target(
             name: "FeatherStorageS3",
             dependencies: [
                 .product(name: "FeatherStorage", package: "feather-storage"),
-                .product(name: "SotoS3", package: "soto"),
+                .target(name: "FeatherGeneratedS3"),
+                .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "Logging", package: "swift-log"),
             ],
             swiftSettings: defaultSwiftSettings

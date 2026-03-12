@@ -4,10 +4,10 @@
 //
 //  Created by Tibor Bödecs on 2023. 01. 16.
 
+import FeatherGeneratedS3
 import FeatherStorage
 import NIOCore
 import SotoCore
-import SotoS3
 import Testing
 
 @testable import FeatherStorageS3

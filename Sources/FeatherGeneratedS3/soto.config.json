@@ -1,0 +1,18 @@
+{
+  "services": {
+    "s3-2006-03-01": {
+      "operations": [
+        "abortMultipartUpload",
+        "completeMultipartUpload",
+        "copyObject",
+        "createMultipartUpload",
+        "deleteObject",
+        "getObject",
+        "headObject",
+        "listObjectsV2",
+        "putObject",
+        "uploadPart"
+      ]
+    }
+  }
+}
