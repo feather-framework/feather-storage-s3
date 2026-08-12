@@ -6,6 +6,7 @@
 
 import FeatherGeneratedS3
 import FeatherStorage
+import Logging
 import NIOCore
 import SotoCore
 import Testing
@@ -18,37 +19,37 @@ struct FeatherStorageS3TestSuite {
     private func runUsingTestStorageClient(
         _ closure: @escaping (@Sendable (StorageClient) async throws -> Void)
     ) async throws {
-        var logger = Logger(label: "test")
-        logger.logLevel = .info
+        try await withLogger(Logger(label: "feather.storage.s3")) { _ in
+            let awsClient = AWSClient(
+                credentialProvider: .static(
+                    accessKeyId: "cHXky6PdP5WGhrC5MMyd",
+                    secretAccessKey: "7diqcEnfBESz9MurK4HiNd4WgVydhj6AIZw1Hj9Q"
+                ),
+                logger: Logger.current
+            )
+            let region = "us-east-1"
 
-        let awsClient = AWSClient(
-            credentialProvider: .static(
-                accessKeyId: "cHXky6PdP5WGhrC5MMyd",
-                secretAccessKey: "7diqcEnfBESz9MurK4HiNd4WgVydhj6AIZw1Hj9Q"
-            ),
-        )
-        let region = "us-east-1"
+            let s3 = S3(
+                client: awsClient,
+                region: .init(rawValue: region),
+                endpoint: "http://localhost:9000"
+            )
 
-        let s3 = S3(
-            client: awsClient,
-            region: .init(rawValue: region),
-            endpoint: "http://localhost:9000"
-        )
+            let storageClient = StorageClientS3(
+                s3: s3,
+                bucket: "miniobucket"
+            )
 
-        let storageClient = StorageClientS3(
-            s3: s3,
-            bucket: "miniobucket"
-        )
-
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            group.addTask {
-                try await awsClient.run()
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                group.addTask {
+                    try await awsClient.run()
+                }
+                group.addTask {
+                    try await closure(storageClient)
+                }
+                try await group.next()
+                group.cancelAll()
             }
-            group.addTask {
-                try await closure(storageClient)
-            }
-            try await group.next()
-            group.cancelAll()
         }
     }
 
