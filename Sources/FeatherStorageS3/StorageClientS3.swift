@@ -20,26 +20,20 @@ public struct StorageClientS3: StorageClient {
     /// Optional request timeout applied by higher-level integrations.
     public let timeout: TimeAmount?
 
-    /// Logger used for all S3 requests.
-    public let logger: Logger
-
     /// Creates a storage client backed by an S3-compatible bucket.
     ///
     /// - Parameters:
     ///   - s3: Configured Soto S3 client.
     ///   - bucket: Bucket name used for object operations.
     ///   - timeout: Optional request timeout configuration.
-    ///   - logger: Logger used for request logging.
     public init(
         s3: S3,
         bucket: String,
-        timeout: TimeAmount? = nil,
-        logger: Logger = .init(label: "feather.storage.s3")
+        timeout: TimeAmount? = nil
     ) {
         self.s3 = s3
         self.bucket = bucket
         self.timeout = timeout
-        self.logger = logger
     }
 
     /// Uploads a full object from a storage sequence.
@@ -62,7 +56,7 @@ public struct StorageClientS3: StorageClient {
                     bucket: bucket,
                     key: key
                 ),
-                logger: logger
+                logger: Logger.current
             )
         }
         catch {
@@ -87,7 +81,7 @@ public struct StorageClientS3: StorageClient {
             }
             let response = try await s3.getObject(
                 .init(bucket: bucket, key: key, range: byteRange),
-                logger: logger
+                logger: Logger.current
             )
             return .init(
                 asyncSequence: response.body,
@@ -110,7 +104,7 @@ public struct StorageClientS3: StorageClient {
         do {
             _ = try await s3.headObject(
                 .init(bucket: bucket, key: key),
-                logger: logger
+                logger: Logger.current
             )
             return true
         }
@@ -133,7 +127,7 @@ public struct StorageClientS3: StorageClient {
         do {
             let response = try await s3.headObject(
                 .init(bucket: bucket, key: key),
-                logger: logger
+                logger: Logger.current
             )
             return UInt64(response.contentLength ?? 0)
         }
@@ -162,7 +156,7 @@ public struct StorageClientS3: StorageClient {
                     copySource: "\(bucket)/\(source)",
                     key: destination
                 ),
-                logger: logger
+                logger: Logger.current
             )
         }
         catch {
@@ -185,7 +179,7 @@ public struct StorageClientS3: StorageClient {
                     bucket: bucket,
                     prefix: prefix
                 ),
-                logger: logger
+                logger: Logger.current
             )
 
             let keys = (response.contents ?? []).compactMap(\.key)
@@ -215,7 +209,7 @@ public struct StorageClientS3: StorageClient {
         do {
             _ = try await s3.deleteObject(
                 .init(bucket: bucket, key: key),
-                logger: logger
+                logger: Logger.current
             )
         }
         catch {
@@ -234,7 +228,7 @@ public struct StorageClientS3: StorageClient {
             let safeKey = key.hasSuffix("/") ? key : key + "/"
             _ = try await s3.putObject(
                 .init(bucket: bucket, contentLength: 0, key: safeKey),
-                logger: logger
+                logger: Logger.current
             )
         }
         catch {
@@ -253,7 +247,7 @@ public struct StorageClientS3: StorageClient {
         do {
             let response = try await s3.createMultipartUpload(
                 .init(bucket: bucket, key: key),
-                logger: logger
+                logger: Logger.current
             )
             guard let uploadId = response.uploadId else {
                 throw StorageClientError.invalidMultipartId
@@ -292,7 +286,7 @@ public struct StorageClientS3: StorageClient {
                     partNumber: number,
                     uploadId: multipartId
                 ),
-                logger: logger
+                logger: Logger.current
             )
             guard let etag = response.eTag else {
                 throw StorageClientError.invalidMultipartChunk
@@ -321,7 +315,7 @@ public struct StorageClientS3: StorageClient {
                     key: key,
                     uploadId: multipartId
                 ),
-                logger: logger
+                logger: Logger.current
             )
         }
         catch {
@@ -359,7 +353,7 @@ public struct StorageClientS3: StorageClient {
                     multipartUpload: .init(parts: parts),
                     uploadId: multipartId
                 ),
-                logger: logger
+                logger: Logger.current
             )
         }
         catch {

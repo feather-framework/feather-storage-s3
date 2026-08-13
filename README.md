@@ -2,8 +2,8 @@
 
 S3 compatible driver implementation for the abstract [Feather Storage](https://github.com/feather-framework/feather-storage) Swift API package.
 
-[![Release: 1.0.0-beta.2](https://img.shields.io/badge/Release-1%2E0%2E0--beta%2E2-F05138)](
-https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-beta.2)
+[![Release: 1.0.0-beta.3](https://img.shields.io/badge/Release-1%2E0%2E0--beta%2E3-F05138)](
+https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-beta.3)
 
 ## Features
 
@@ -31,7 +31,7 @@ https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-beta.
 Add the dependency to your `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/feather-framework/feather-storage-s3", exact: "1.0.0-beta.2"),
+.package(url: "https://github.com/feather-framework/feather-storage-s3", exact: "1.0.0-beta.3"),
 ```
 
 Then add `FeatherStorageS3` to your target dependencies:
@@ -49,32 +49,35 @@ API documentation is available at the link below:
 Here is a brief example:
 
 ```swift
+import Logging
 import NIOCore
 import FeatherStorage
 import FeatherStorageS3
 
+try await withLogger(Logger(label: "example")) { _ in
+    let text = "Hello, World"
+    var buffer = ByteBufferAllocator().buffer(capacity: text.utf8.count)
+    buffer.writeString(text)
 
-
-let text = "Hello, World"
-var buffer = ByteBufferAllocator().buffer(capacity: text.utf8.count)
-buffer.writeString(text)
-    
-try await storage.upload(
-    key: "docs/hello.txt",
-    sequence: StorageSequence(
-        asyncSequence: ByteBufferSequence(buffer: buffer),
-        length: UInt64(buffer.readableBytes)
+    try await storage.upload(
+        key: "docs/hello.txt",
+        sequence: StorageSequence(
+            asyncSequence: ByteBufferSequence(buffer: buffer),
+            length: UInt64(buffer.readableBytes)
+        )
     )
-)
 
-try await storage.exists(key: "docs/hello.txt")
-try await storage.size(key: "docs/hello.txt")
+    try await storage.exists(key: "docs/hello.txt")
+    try await storage.size(key: "docs/hello.txt")
 
-let result = try await storage.download(key: "docs/hello.txt", range: nil)
-let buffer = try await result.collect(upTo: .max)
-let value = buffer.getString(at: 0, length: buffer.readableBytes)
-print(value)
+    let result = try await storage.download(key: "docs/hello.txt", range: nil)
+    let buffer = try await result.collect(upTo: .max)
+    let value = buffer.getString(at: 0, length: buffer.readableBytes)
+    print(value)
+}
 ```
+
+The package uses `Logger.current` from [swift-log](https://github.com/apple/swift-log) for S3 request logging. Use `withLogger` to scope the logger for an operation; calls to `Logger.current` within that scope use the scoped logger.
 
 > [!WARNING]  
 > This repository is a work in progress, things can break until it reaches v1.0.0.
