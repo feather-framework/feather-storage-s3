@@ -2,8 +2,8 @@
 
 S3 compatible driver implementation for the abstract [Feather Storage](https://github.com/feather-framework/feather-storage) Swift API package.
 
-[![Release: 1.0.0-rc.1](https://img.shields.io/badge/Release-1%2E0%2E0--rc%2E1-F05138)](
-https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-rc.1)
+[![Release: 1.0.0-beta.3](https://img.shields.io/badge/Release-1%2E0%2E0--beta%2E3-F05138)](
+https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-beta.3)
 
 ## Features
 
@@ -31,7 +31,7 @@ https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-rc.1)
 Add the dependency to your `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/feather-framework/feather-storage-s3", exact: "1.0.0-rc.1"),
+.package(url: "https://github.com/feather-framework/feather-storage-s3", exact: "1.0.0-beta.3"),
 ```
 
 Then add `FeatherStorageS3` to your target dependencies:
