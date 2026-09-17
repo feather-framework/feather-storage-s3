@@ -1,4 +1,4 @@
-FROM minio/minio:RELEASE.2025-09-07T16-13-09Z
+FROM quay.io/minio/minio:latest
 
 # Install mc client (comes pre-installed in recent images)
 # If not, you can curl it from: https://dl.min.io/client/mc/release/linux-amd64/mc

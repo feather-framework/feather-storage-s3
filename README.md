@@ -2,8 +2,8 @@
 
 S3 compatible driver implementation for the abstract [Feather Storage](https://github.com/feather-framework/feather-storage) Swift API package.
 
-[![Release: 1.0.0-beta.3](https://img.shields.io/badge/Release-1%2E0%2E0--beta%2E3-F05138)](
-https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-beta.3)
+[![Release: 1.0.0-beta.4](https://img.shields.io/badge/Release-1%2E0%2E0--beta%2E4-F05138)](
+https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-beta.4)
 
 ## Features
 
@@ -31,7 +31,7 @@ https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-beta.
 Add the dependency to your `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/feather-framework/feather-storage-s3", exact: "1.0.0-beta.3"),
+.package(url: "https://github.com/feather-framework/feather-storage-s3", exact: "1.0.0-beta.4"),
 ```
 
 Then add `FeatherStorageS3` to your target dependencies:
@@ -53,27 +53,55 @@ import Logging
 import NIOCore
 import FeatherStorage
 import FeatherStorageS3
+import SotoCore
 
 try await withLogger(Logger(label: "example")) { _ in
-    let text = "Hello, World"
-    var buffer = ByteBufferAllocator().buffer(capacity: text.utf8.count)
-    buffer.writeString(text)
-
-    try await storage.upload(
-        key: "docs/hello.txt",
-        sequence: StorageSequence(
-            asyncSequence: ByteBufferSequence(buffer: buffer),
-            length: UInt64(buffer.readableBytes)
-        )
+    let awsClient = AWSClient(
+        credentialProvider: .default,
+        logger: Logger.current
+    )
+    let storage = StorageClientS3(
+        awsClient: awsClient,
+        region: "us-east-1",
+        bucket: "example-bucket"
     )
 
-    try await storage.exists(key: "docs/hello.txt")
-    try await storage.size(key: "docs/hello.txt")
+    try await withThrowingTaskGroup(of: Void.self) { group in
+        group.addTask {
+            try await awsClient.run()
+        }
+        group.addTask {
+            let text = "Hello, World"
+            var buffer = ByteBufferAllocator()
+                .buffer(capacity: text.utf8.count)
+            buffer.writeString(text)
 
-    let result = try await storage.download(key: "docs/hello.txt", range: nil)
-    let buffer = try await result.collect(upTo: .max)
-    let value = buffer.getString(at: 0, length: buffer.readableBytes)
-    print(value)
+            try await storage.upload(
+                key: "docs/hello.txt",
+                sequence: StorageSequence(
+                    asyncSequence: ByteBufferSequence(buffer: buffer),
+                    length: UInt64(buffer.readableBytes)
+                )
+            )
+
+            try await storage.exists(key: "docs/hello.txt")
+            try await storage.size(key: "docs/hello.txt")
+
+            let result = try await storage.download(
+                key: "docs/hello.txt",
+                range: nil
+            )
+            let buffer = try await result.collect(upTo: .max)
+            let value = buffer.getString(
+                at: 0,
+                length: buffer.readableBytes
+            )
+            print(value)
+        }
+
+        try await group.next()
+        group.cancelAll()
+    }
 }
 ```
 
@@ -93,8 +121,10 @@ The following storage client implementations are also available for use:
 
 - Build: `swift build`
 - Test:
-  - local: `swift test`
+  - local with MinIO: `make test`
   - using Docker: `make docker-test`
+- Bare `swift test` skips the MinIO integration test unless
+  `FEATHER_STORAGE_S3_TEST_ENDPOINT` is set.
 - Format: `make format`
 - Check: `make check`
 

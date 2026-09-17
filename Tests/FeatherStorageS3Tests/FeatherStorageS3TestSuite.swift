@@ -5,6 +5,7 @@
 //  Created by Tibor Bödecs on 2023. 01. 16.
 
 import FeatherStorage
+import Foundation
 import Logging
 import NIOCore
 import SotoCore
@@ -12,12 +13,19 @@ import Testing
 
 @testable import FeatherStorageS3
 
+private let testEndpoint = ProcessInfo.processInfo.environment[
+    "FEATHER_STORAGE_S3_TEST_ENDPOINT"
+]
+
 @Suite
 struct FeatherStorageS3TestSuite {
 
     private func runUsingTestStorageClient(
         _ closure: @escaping (@Sendable (StorageClient) async throws -> Void)
     ) async throws {
+        guard let testEndpoint else {
+            return
+        }
         try await withLogger(Logger(label: "feather.storage.s3")) { _ in
             let awsClient = AWSClient(
                 credentialProvider: .static(
@@ -31,7 +39,7 @@ struct FeatherStorageS3TestSuite {
             let storageClient = StorageClientS3(
                 awsClient: awsClient,
                 region: region,
-                endpoint: "http://localhost:9000",
+                endpoint: testEndpoint,
                 bucket: "miniobucket"
             )
 
@@ -48,7 +56,12 @@ struct FeatherStorageS3TestSuite {
         }
     }
 
-    @Test
+    @Test(
+        .enabled(
+            if: testEndpoint != nil,
+            "Set FEATHER_STORAGE_S3_TEST_ENDPOINT to run the MinIO integration test."
+        )
+    )
     func uploadDownloadWhenConfigured() async throws {
         try await runUsingTestStorageClient { storage in
             let key = "test.txt"
