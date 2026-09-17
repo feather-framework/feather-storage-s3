@@ -1,6 +1,7 @@
 .github/**
 docker/**
 .docctargetlist
+.dockerignore
 .gitignore
 .swift-format
 .swiftformatignore

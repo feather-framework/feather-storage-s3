@@ -37,7 +37,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log", from: "1.14.0"),
         .package(url: "https://github.com/soto-project/soto-core", from: "7.0.0"),
         .package(url: "https://github.com/soto-project/soto-codegenerator", from: "7.0.0"),
-        .package(url: "https://github.com/feather-framework/feather-storage", exact: "1.0.0-beta.2"),
+        .package(url: "https://github.com/feather-framework/feather-storage", exact: "1.0.0-beta.3"),
         // [docc-plugin-placeholder]
     ],
     targets: [

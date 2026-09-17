@@ -36,10 +36,14 @@ headers:
 
 fix-headers:
 	curl -s $(baseUrl)/check-swift-headers.sh | bash -s -- --fix
-	
-test:
-	swift test --parallel
 
+test:
+	@set -e; \
+	trap 'docker compose down --volumes' EXIT; \
+	docker compose up -d --build --wait minio; \
+	FEATHER_STORAGE_S3_TEST_ENDPOINT=http://127.0.0.1:9100 swift test --parallel
 
 docker-test:
-	docker build -t feather-storage-s3-tests . -f ./docker/tests/Dockerfile && docker run --rm feather-storage-s3-tests
+	@set -e; \
+	trap 'docker compose down --volumes' EXIT; \
+	docker compose up --build --abort-on-container-exit --exit-code-from tests tests

@@ -36,6 +36,29 @@ public struct StorageClientS3: StorageClient {
         self.timeout = timeout
     }
 
+    /// Creates a storage client from the public Soto client configuration.
+    ///
+    /// This initializer keeps the generated S3 service module internal to the
+    /// driver, so applications only depend on `FeatherStorageS3` and
+    /// `SotoCore` at their composition boundary.
+    public init(
+        awsClient: AWSClient,
+        region: String,
+        endpoint: String? = nil,
+        bucket: String,
+        timeout: TimeAmount? = nil
+    ) {
+        self.init(
+            s3: S3(
+                client: awsClient,
+                region: .init(rawValue: region),
+                endpoint: endpoint
+            ),
+            bucket: bucket,
+            timeout: timeout
+        )
+    }
+
     /// Uploads a full object from a storage sequence.
     ///
     /// - Parameters:
