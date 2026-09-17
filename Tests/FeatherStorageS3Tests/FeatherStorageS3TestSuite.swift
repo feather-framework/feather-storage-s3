@@ -4,7 +4,6 @@
 //
 //  Created by Tibor Bödecs on 2023. 01. 16.
 
-import FeatherGeneratedS3
 import FeatherStorage
 import Logging
 import NIOCore
@@ -29,14 +28,10 @@ struct FeatherStorageS3TestSuite {
             )
             let region = "us-east-1"
 
-            let s3 = S3(
-                client: awsClient,
-                region: .init(rawValue: region),
-                endpoint: "http://localhost:9000"
-            )
-
             let storageClient = StorageClientS3(
-                s3: s3,
+                awsClient: awsClient,
+                region: region,
+                endpoint: "http://localhost:9000",
                 bucket: "miniobucket"
             )
 
