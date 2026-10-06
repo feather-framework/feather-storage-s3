@@ -1,29 +1,27 @@
 #!/bin/sh
 set -e
 
-# Start MinIO server in the background
 minio server /data --console-address ":9001" &
 MINIO_PID=$!
 
-echo "Waiting for MinIO to be ready..."
-until curl -s http://localhost:9000/minio/health/ready > /dev/null; do
+until wget -q -O /dev/null http://localhost:9000/minio/health/ready; do
     sleep 1
 done
 
-# Configure local alias with default root credentials
-mc alias set local http://localhost:9000 "${MINIO_ROOT_USER}" "${MINIO_ROOT_PASSWORD}"
-
-# Create new user (access + secret key)
-#mc admin user add local newuser newpassword
-
-# Optionally assign policies
-#mc admin policy attach local readwrite --user newuser
+mc alias set local http://localhost:9000 \
+    "${MINIO_ROOT_USER}" \
+    "${MINIO_ROOT_PASSWORD}"
 
 mc admin accesskey create local "${MINIO_ROOT_USER}" \
     --access-key "${MINIO_ACCESS_KEY_ID}" \
-    --secret-key "${MINIO_SECRET_ACCESS_KEY}" || echo "Access key already exists"
+    --secret-key "${MINIO_SECRET_ACCESS_KEY}" \
+    || echo "Access key already exists"
 
-mc mb "local/${MINIO_BUCKET_NAME}" || echo "Bucket already exists"
+mc mb "local/${MINIO_BUCKET_NAME}" \
+    || echo "Bucket already exists"
 
-# Wait for MinIO to terminate if foreground fails (optional)
+# Public media URLs are served through the local Nginx edge cache. Keep the
+# S3 credentials private while allowing the edge to read media objects.
+mc anonymous set download "local/${MINIO_BUCKET_NAME}"
+
 wait "$MINIO_PID"

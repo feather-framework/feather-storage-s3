@@ -5,6 +5,7 @@
 //  Created by Tibor Bödecs on 2023. 01. 16.
 
 import FeatherStorage
+import FeatherSotoS3
 import Foundation
 import Logging
 import NIOCore
@@ -21,7 +22,7 @@ private let testEndpoint = ProcessInfo.processInfo.environment[
 struct FeatherStorageS3TestSuite {
 
     private func runUsingTestStorageClient(
-        _ closure: @escaping (@Sendable (StorageClient) async throws -> Void)
+        _ closure: @escaping (@Sendable (StorageClientS3) async throws -> Void)
     ) async throws {
         guard let testEndpoint else {
             return
@@ -78,8 +79,15 @@ struct FeatherStorageS3TestSuite {
                     sequence: .init(
                         asyncSequence: sequence,
                         length: UInt64(payload.readableBytes)
-                    )
+                    ),
+                    contentType: "text/plain"
                 )
+
+                let metadata = try await storage.s3.headObject(
+                    .init(bucket: storage.bucket, key: key),
+                    logger: Logger.current
+                )
+                #expect(metadata.contentType == "text/plain")
 
                 let downloaded = try await storage.download(
                     key: key,
