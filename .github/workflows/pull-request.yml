@@ -22,19 +22,10 @@ jobs:
       python_lint_check_enabled : false
 
   tests:
-    name: Tests (Swift ${{ matrix.swift }})
+    name: Tests
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        swift: ["6.3", "6.4"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up Swift
-        uses: swift-actions/setup-swift@v3
-        with:
-          swift-version: ${{ matrix.swift }}
-          skip-verify-signature: true
       - name: Run tests
-        run: make test
+        run: make docker-test
