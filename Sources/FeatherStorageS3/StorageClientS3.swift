@@ -4,11 +4,11 @@
 //
 //  Created by Tibor Bödecs on 2023. 01. 16.
 
-import FeatherGeneratedS3
-import FeatherStorage
+public import FeatherSotoS3
+public import FeatherStorage
 import Logging
-import NIOCore
-import SotoCore
+public import NIOCore
+public import SotoCore
 
 /// S3-compatible storage driver.
 public struct StorageClientS3: StorageClient {
@@ -64,10 +64,12 @@ public struct StorageClientS3: StorageClient {
     /// - Parameters:
     ///   - key: Object key to write.
     ///   - sequence: Sequence of bytes to upload.
+    ///   - contentType: Optional MIME type describing the object contents.
     /// - Throws: `StorageClientError` when the upload fails.
     public func upload(
         key: String,
-        sequence: StorageSequence
+        sequence: StorageSequence,
+        contentType: String?
     ) async throws(StorageClientError) {
         do {
             _ = try await s3.putObject(
@@ -77,6 +79,7 @@ public struct StorageClientS3: StorageClient {
                         length: sequence.length.map(Int.init)
                     ),
                     bucket: bucket,
+                    contentType: contentType,
                     key: key
                 ),
                 logger: Logger.current
@@ -85,6 +88,20 @@ public struct StorageClientS3: StorageClient {
         catch {
             throw mapError(error)
         }
+    }
+
+    /// Uploads a full object without additional metadata.
+    ///
+    /// This overload preserves compatibility with the original storage API.
+    public func upload(
+        key: String,
+        sequence: StorageSequence
+    ) async throws(StorageClientError) {
+        try await upload(
+            key: key,
+            sequence: sequence,
+            contentType: nil
+        )
     }
 
     /// Downloads an object, optionally constrained to a byte range.
@@ -387,7 +404,7 @@ public struct StorageClientS3: StorageClient {
 
 extension StorageClientS3 {
 
-    private func mapError(_ error: Error) -> StorageClientError {
+    private func mapError(_ error: any Error) -> StorageClientError {
         if let storageError = error as? StorageClientError {
             return storageError
         }
