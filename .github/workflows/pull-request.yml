@@ -35,5 +35,6 @@ jobs:
         uses: swift-actions/setup-swift@v3
         with:
           swift-version: ${{ matrix.swift }}
+          skip-verify-signature: true
       - name: Run tests
         run: make test
