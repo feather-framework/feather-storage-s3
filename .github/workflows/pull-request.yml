@@ -22,13 +22,17 @@ jobs:
       python_lint_check_enabled : false
 
   tests:
-    name: Tests
-    uses: swiftlang/github-workflows/.github/workflows/swift_package_test.yml@0.0.15
-    with:
-      enable_windows_checks : false
-      linux_build_command: |
-        set -e
-        trap 'docker compose down --volumes' EXIT
-        docker compose up -d --build --wait minio
-        FEATHER_STORAGE_S3_TEST_ENDPOINT=http://127.0.0.1:9100 swift test --parallel
-      linux_swift_versions: '["6.3", "6.4"]'
+    name: Tests (Swift ${{ matrix.swift_version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        swift_version: ["6.3", "6.4"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: ${{ matrix.swift_version }}
+      - name: Run tests
+        run: make test
