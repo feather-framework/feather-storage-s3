@@ -26,5 +26,5 @@ jobs:
     uses: swiftlang/github-workflows/.github/workflows/swift_package_test.yml@0.0.15
     with:
       enable_windows_checks : false
-      linux_build_command: "make test"
+      linux_build_command: "swift test --parallel"
       linux_swift_versions: '["6.3", "6.4"]'
