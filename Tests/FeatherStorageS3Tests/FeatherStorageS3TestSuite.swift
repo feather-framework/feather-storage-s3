@@ -101,6 +101,28 @@ struct FeatherStorageS3TestSuite {
                 )
                 #expect(value == contents)
 
+                let multipartKey = "multipart.txt"
+                let multipartId = try await storage.createMultipartId(
+                    key: multipartKey,
+                    contentType: "text/plain"
+                )
+                let part = try await storage.upload(
+                    multipartId: multipartId,
+                    key: multipartKey,
+                    number: 1,
+                    sequence: .init(buffer: payload)
+                )
+                try await storage.finish(
+                    multipartId: multipartId,
+                    key: multipartKey,
+                    chunks: [part]
+                )
+                let multipartMetadata = try await storage.s3.headObject(
+                    .init(bucket: storage.bucket, key: multipartKey),
+                    logger: Logger.current
+                )
+                #expect(multipartMetadata.contentType == "text/plain")
+
             }
             catch {
                 Issue.record(error)
