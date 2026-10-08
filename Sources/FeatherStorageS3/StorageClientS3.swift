@@ -278,15 +278,22 @@ public struct StorageClientS3: StorageClient {
 
     /// Starts a multipart upload session.
     ///
-    /// - Parameter key: Object key for the multipart upload.
+    /// - Parameters:
+    ///   - key: Object key for the multipart upload.
+    ///   - contentType: Optional MIME type stored with the completed object.
     /// - Returns: Multipart upload identifier.
     /// - Throws: `StorageClientError` when initialization fails.
     public func createMultipartId(
-        key: String
+        key: String,
+        contentType: String?
     ) async throws(StorageClientError) -> String {
         do {
             let response = try await s3.createMultipartUpload(
-                .init(bucket: bucket, key: key),
+                .init(
+                    bucket: bucket,
+                    contentType: contentType,
+                    key: key
+                ),
                 logger: Logger.current
             )
             guard let uploadId = response.uploadId else {
