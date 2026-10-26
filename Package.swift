@@ -34,7 +34,7 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto-core", from: "7.17.0"),
         .package(
             url: "https://github.com/feather-framework/feather-storage",
-            exact: "1.0.0-rc.2"
+            exact: "1.0.0-rc.3"
         ),
     ],
     targets: [
