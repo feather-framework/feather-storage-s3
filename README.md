@@ -2,8 +2,8 @@
 
 S3 compatible driver implementation for the abstract [Feather Storage](https://github.com/feather-framework/feather-storage) Swift API package.
 
-[![Release: 1.0.0-rc.2](https://img.shields.io/badge/Release-1%2E0%2E0--rc%2E2-F05138)](
-https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-rc.2)
+[![Release: 1.0.0-rc.3](https://img.shields.io/badge/Release-1%2E0%2E0--rc%2E3-F05138)](
+https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-rc.3)
 
 ## Features
 
@@ -31,7 +31,7 @@ https://github.com/feather-framework/feather-storage-s3/releases/tag/1.0.0-rc.2)
 Add the dependency to your `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/feather-framework/feather-storage-s3", exact: "1.0.0-rc.2"),
+.package(url: "https://github.com/feather-framework/feather-storage-s3", exact: "1.0.0-rc.3"),
 ```
 
 Then add `FeatherStorageS3` to your target dependencies:
@@ -115,7 +115,6 @@ The package uses `Logger.current` from [swift-log](https://github.com/apple/swif
 The following storage client implementations are also available for use:
 
 - [FS](https://github.com/feather-framework/feather-storage-fs)
-- [Ephemeral](https://github.com/feather-framework/feather-storage-ephemeral)
 
 ## Development
 
